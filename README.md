@@ -1,6 +1,6 @@
 # 云计算课程项目报告
 
-**小组成员名单**
+## 小组成员名单
 
 | 姓名   | 学号    |
 | ------ | ------- |
@@ -15,6 +15,7 @@
 ### Master配置
 
 1. 配置xml文件，详细配置请在附录查看
+
 2. 格式化
 
 ```shell
@@ -36,7 +37,9 @@ mapred --daemon start historyserver
 
 多次格式化后，启动报错：
 
-`` INFO org.apache.hadoop.ipc.Client: Retrying connect to server: master/192.168.1.240:9000. Already tried 6 time(s).`
+```shell
+INFO org.apache.hadoop.ipc.Client: Retrying connect to server: master/192.168.1.240:9000. Already tried 6 time(s).
+```
 
 解决：删除所有机器的tmp，再格式化
 
@@ -54,120 +57,119 @@ hadoop namenode -format
 
 1. 改本机hostname
 
-   ```
-   sudo hostname [yourhost]
-   ```
+```shell
+sudo hostname [yourhost]
+```
 
 2. 改etc/hosts
 
-   ```
-   sudo vim /etc/hosts
-   ```
+```shell
+sudo vim /etc/hosts
+```
 
-   ```
-   [hostIP] dmhost
-   ...
-   ```
+```shell
+[hostIP] dmhost
+...
+```
 
 3. 建立hadoop_user账户
 
-   ```
-   sudo groupadd hadoop
-   sudo useradd -s /bin/bash -d /home/hadoop_user -m hadoop_user -g hadoop
-   sudo passwd hadoop_user
-   ```
+```shell
+sudo groupadd hadoop
+sudo useradd -s /bin/bash -d /home/hadoop_user -m hadoop_user -g hadoop
+sudo passwd hadoop_user
+```
 
 7. 安装ssh
 
-   ```
-   sudo apt-get install ssh
-   ```
+```shell
+sudo apt-get install ssh
+```
 
 8. 生成公钥和私钥
 
-   ```
-   ssh-keygen -t rsa -P ''
-   ```
+```shell
+ssh-keygen -t rsa -P ''
+```
 
 9. 授权
 
-   ```
-   cd .ssh
-   cat id_rsa.pub >> authorized_keys
-   chmod 600 authorized_keys
-   ```
+```shell
+cd .ssh
+cat id_rsa.pub >> authorized_keys
+chmod 600 authorized_keys
+```
 
 10. 测试ssh无密码登录
 
-    ```
-    ssh [yourhost]
-    ```
+```shell
+ssh [yourhost]
+```
 
-    记得退出
+记得退出
 
-    ```
-    exit
-    ```
+```shell
+exit
+```
 
 11. 授权给主节点
 
-    ```
-    scp hadoop_user@dmhost:~/.ssh/id_rsa.pub ./master_rsa.pub
-    cat master_rsa.pub >> authorized_keys
-    ```
+```shell
+scp hadoop_user@dmhost:~/.ssh/id_rsa.pub ./master_rsa.pub
+cat master_rsa.pub >> authorized_keys
+```
 
-    - 主节点测试能否ssh无密码登录
-
+- 主节点测试能否ssh无密码登录
 
 ---
 
 12. jdk安装，安装过就不用再装
 
-    ```
-    sudo apt-get install java-8-openjdk-amd64
-    ```
+```shell
+sudo apt-get install java-8-openjdk-amd64
+```
 
 13. 配环境变量
 
-    ```
-    vim ~/.bashrc
-    ```
+```shell
+vim ~/.bashrc
+```
 
-    在文件末尾加入
+在文件末尾加入
 
-    ```
-    export JAVA_HOME=[your java path]
-    export HADOOP_HOME=/home/hadoop_user/hadoop
-    export PATH=$PATH:$JAVA_HOME/bin:$HADOOP_HOME/bin:$HADOOP_HOME/sbin
-    ```
+```shell
+export JAVA_HOME=[your java path]
+export HADOOP_HOME=/home/hadoop_user/hadoop
+export PATH=$PATH:$JAVA_HOME/bin:$HADOOP_HOME/bin:$HADOOP_HOME/sbin
+```
 
 14. 测试
 
-    ```
-    java -version
-    ```
+```shell
+java -version
+```
 
-    - 主机复制配置文件到分机
+- 主机复制配置文件到分机
 
 ---
 
 
 15. 测试
 
-```
+```shell
 hadoop version
 ```
 
 16. 更改hadoop-env.sh
 
-```
+```shell
 cd /home/had_usr/hadoop/etc/hadoop
 vim hadoop-env.sh
 ```
 
 增加JAVA_HOME地址
 
-```
+```shell
 export JAVA_HOME=/usr/lib/jvm/java-8-openjdk-amd64
 ```
 
@@ -183,50 +185,50 @@ export JAVA_HOME=/usr/lib/jvm/java-8-openjdk-amd64
 
 - 解压
 
-  ```
-  tar -zxvf apache-hive-3.1.2-bin.tar.gz
-  ```
+```sh
+tar -zxvf apache-hive-3.1.2-bin.tar.gz
+```
 
 - 文件夹改名
 
-  ```
-  mv apache-hive-3.1.2-bin hive
-  ```
+```sh
+mv apache-hive-3.1.2-bin hive
+```
 
 - 配置环境变量
 
-  ```
-  vim ~/.bashrc
-  ```
+```sh
+vim ~/.bashrc
+```
 
-  ```
-  export HIVE_HOME=/home/hadoop_user/hive
-  export PATH=...:$HIVE_HOME/bin
-  ```
+```sh
+export HIVE_HOME=/home/hadoop_user/hive
+export PATH=...:$HIVE_HOME/bin
+```
 
 - 配置文件
 
 #### hive-env.sh
 
-  ```shell
-  cd /opt/apache-hive-2.3.4-bin/conf/
-  cp hive-env.sh.template hive-env.sh
-  vi hive-env.sh
-  ```
+```shell
+cd /opt/apache-hive-2.3.4-bin/conf/
+cp hive-env.sh.template hive-env.sh
+vi hive-env.sh
+```
 
-  add
+增加：
 
-  ```sh
-  # HADOOP_HOME=${bin}/../../hadoop
-  export HADOOP_HOME=/home/hadoop_user/hadoop
-  
-  # Hive Configuration Directory can be controlled by:
-  export HIVE_CONF_DIR=/home/hadoop_user/hive/conf
-  
-  # Folder containing extra libraries required for hive compilation/execution can be controlled by:
-  export HIVE_AUX_JARS_PATH=/opt/hive/lib
-  export JAVA_HOME=/usr/lib/jvm/java-8-openjdk-amd64/jre/bin/java
-  ```
+```sh
+# HADOOP_HOME=${bin}/../../hadoop
+export HADOOP_HOME=/home/hadoop_user/hadoop
+
+# Hive Configuration Directory can be controlled by:
+export HIVE_CONF_DIR=/home/hadoop_user/hive/conf
+
+# Folder containing extra libraries required for hive compilation/execution can be controlled by:
+export HIVE_AUX_JARS_PATH=/opt/hive/lib
+export JAVA_HOME=/usr/lib/jvm/java-8-openjdk-amd64/jre/bin/java
+```
 
 
 
@@ -291,7 +293,7 @@ vi hive-site.xml
 
 ##### 端口配置一览
 
-| name                                 | value |
+| 字段                                 | 值 |
 | ------------------------------------ | ----- |
 | hive.metastore.port                  | 7083  |
 | hive.server2.thrift.http.port        | 10001 |
